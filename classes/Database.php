@@ -8,17 +8,12 @@ class Database
     private string $db;
     private ?PDO $conn = null;
 
-    public function __construct(
-        string $host = 'localhost',
-        string $db = 'Library',
-        string $user = '',
-        string $pass = ''
-    )
+    public function __construct()
     {
-        $this->host = $host;
-        $this->db = $db;
-        $this->user = $user;
-        $this->pass = $pass;
+        $this->host = getenv('DB_HOST') ?: 'localhost';
+        $this->db   = getenv('DB_NAME') ?: 'Library';
+        $this->user = getenv('DB_USER') ?: '';
+        $this->pass = getenv('DB_PASS') ?: '';
     }
 
     public function connect(): PDO
