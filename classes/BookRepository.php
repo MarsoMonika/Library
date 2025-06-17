@@ -32,18 +32,18 @@ class BookRepository
         $books = [];
 
         foreach ($rows as $row) {
-            $books[] = new Book(
+            $books[] = (new Book(
                 $row['Title'],
                 $row['Author'],
                 (int)$row['PublishYear'],
                 (bool)$row['IsAvailable'],
                 (int)$row['Id']
-            );
+            ))->toArray();
         }
         return $books;
     }
 
-    public function getById(int $id): ?Book
+    public function getById(int $id): ?array
     {
         $stmt = $this->conn->prepare("SELECT * FROM books WHERE Id = ?");
         $stmt->execute([$id]);
@@ -52,13 +52,14 @@ class BookRepository
         if (!$row) {
             return null;
         }
-        return new Book(
+        $book = new Book(
             $row['Title'],
             $row['Author'],
             (int)$row['PublishYear'],
-            (int)$row['IsAvailable'],
+            (bool)$row['IsAvailable'],
             (int)$row['Id']
         );
+        return $book->toArray();
     }
 
     public function update(Book $book): bool
