@@ -16,13 +16,24 @@ class Book
         $this->isAvailable = $isAvailable;
         $this->id = $id;
     }
+    public function toArray() : array
+    {
+        return [
+            'id' => $this->getId(),
+            'title' => $this->getTitle(),
+            'author' => $this->getAuthor(),
+            'publishYear' => $this->getPublishYear(),
+            'isAvailable' => $this->isAvailable()
+        ];
+
+    }
 
     public function getId(): int
     {
         return $this->id;
     }
 
-    public function getTitle()
+    public function getTitle(): string
     {
         return $this->title;
     }
