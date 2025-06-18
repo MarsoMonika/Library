@@ -1,4 +1,7 @@
 <?php
+
+// simple test for checking the connection
+
 require_once __DIR__ . '/../classes/Database.php';
 
 $db = new Database();

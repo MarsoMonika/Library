@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Library App</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<h1>Library</h1>
+
+<div id="addBookPrompt">
+    <p>Would you like to add a book to the library collection?</p>
+    <button type="button" id="showFormBtn">Add Book</button>
+</div>
+
+<form id="bookForm" style="display: none">
+    <input type="text" id="title" placeholder="Title" required>
+    <input type="text" id="author" placeholder="Author" required>
+    <input type="number" id="publishYear" placeholder="Publish Year" required>
+    <label>
+        <input type="checkbox" id="isAvailable" checked>
+        Available
+    </label>
+    <button type="submit" id="submitBtn">Add Book</button>
+    <button type="button" id="cancelBtn" style="display:none;">Cancel</button>
+</form>
+
+<input type="text" id="searchInput" placeholder="Search by title or author...">
+
+<div id="booksGrid" class="grid-list"></div>
+
+<script src="app.js"></script>
+</body>
+</html>

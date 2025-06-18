@@ -1,5 +1,6 @@
 <?php
 
+//handles database connection with use of PDO to be more secure
 class Database
 {
     private string $host;

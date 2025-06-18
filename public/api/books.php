@@ -1,34 +1,32 @@
 <?php
-
-require_once __DIR__ . '/../../classes/BookRepository.php';
-require_once __DIR__ . '/../../classes/Database.php';
+require_once __DIR__ . '/../../controllers/BookController.php';
 
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type");
 header("Content-Type: application/json");
 
+$controller = new BookController();
 $method = $_SERVER["REQUEST_METHOD"];
-try {
-    $db = new Database();
-    $bookRepository = new BookRepository($db);
 
+try {
     switch ($method) {
         case "GET":
             if (isset($_GET["id"])) {
-                $id = $_GET["id"];
-                $book = $bookRepository->getById((int)$_GET["id"]);
-                if ($book) {
-                    echo json_encode($book, JSON_UNESCAPED_UNICODE);
+                $result = $controller->get((int)$_GET["id"]);
+                if ($result) {
+                    echo json_encode($result, JSON_UNESCAPED_UNICODE);
                 } else {
                     http_response_code(404);
                     echo json_encode(['error' => 'Book not found.']);
                 }
+            } else if (isset($_GET["search"])) {
+                echo json_encode($controller->search($_GET["search"]), JSON_UNESCAPED_UNICODE);
             } else {
-                $books = $bookRepository->getAll();
-                echo json_encode($books, JSON_UNESCAPED_UNICODE);
+                echo json_encode($controller->list(), JSON_UNESCAPED_UNICODE);
             }
             break;
+
         case "POST":
             $data = json_decode(file_get_contents("php://input"), true);
             if (!$data) {
@@ -36,14 +34,8 @@ try {
                 echo json_encode(['error' => 'Invalid JSON.']);
                 break;
             }
-            $book = new Book(
-                $data["title"] ?? 'null',
-                $data["author"] ?? '',
-                (int)$data["publishYear"] ?? 0,
-                (bool)$data["isAvailable"] ?? false,
-                0
-            );
-            if ($bookRepository->add($book)) {
+            $ok = $controller->create($data);
+            if ($ok) {
                 http_response_code(201);
                 echo json_encode(['success' => 'Book added.']);
             } else {
@@ -52,51 +44,42 @@ try {
             }
             break;
 
-        case
-        "PUT":
+        case "PUT":
             $data = json_decode(file_get_contents("php://input"), true);
-            if (!$data) {
+            if (!$data || !isset($data["id"])) {
                 http_response_code(400);
-                echo json_encode(['error' => 'Invalid JSON.']);
+                echo json_encode(['error' => 'Missing or invalid "id".']);
                 break;
             }
-            $book = new Book(
-                $data["title"] ?? '',
-                $data["author"] ?? '',
-                (int)$data["publishYear"] ?? 0,
-                (bool)$data["isAvailable"] ?? false,
-                (int)$data["id"] ?? 0
-            );
-            if ($bookRepository->update($book)) {
-                http_response_code(200);
+            $ok = $controller->update($data);
+            if ($ok) {
                 echo json_encode(['success' => 'Book updated.']);
             } else {
                 http_response_code(400);
                 echo json_encode(['error' => 'Book not updated.']);
             }
             break;
-        case "DELETE":
 
-            $id = null;
-            if (isset($_GET["id"])) {
-                $id = (int)$_GET["id"];
-            } else {
+        case "DELETE":
+            $id = $_GET["id"] ?? null;
+            if (!$id) {
                 $data = json_decode(file_get_contents("php://input"), true);
-                $id = $data["id"] ?? 0;
+                $id = $data["id"] ?? null;
             }
-            if ($id === null) {
+            if (!$id) {
                 http_response_code(400);
                 echo json_encode(['error' => 'Missing "id".']);
                 break;
             }
-            if ($bookRepository->delete($id)) {
+            $ok = $controller->delete((int)$id);
+            if ($ok) {
                 http_response_code(204);
-                echo json_encode(['success' => 'Book deleted.']);
             } else {
                 http_response_code(400);
                 echo json_encode(['error' => 'Book not deleted.']);
             }
             break;
+
         case "OPTIONS":
             http_response_code(204);
             break;
@@ -106,8 +89,7 @@ try {
             echo json_encode(['error' => 'Method not allowed.']);
             break;
     }
-} catch (PDOException $e) {
+} catch (Exception $e) {
     http_response_code(500);
     echo json_encode(['error' => $e->getMessage()]);
 }
-

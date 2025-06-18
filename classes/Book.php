@@ -1,5 +1,6 @@
 <?php
 
+//book model representing the book record from database
 class Book
 {
     private string $title;
@@ -16,6 +17,8 @@ class Book
         $this->isAvailable = $isAvailable;
         $this->id = $id;
     }
+
+    // it helps convert data int proper format
     public function toArray() : array
     {
         return [
