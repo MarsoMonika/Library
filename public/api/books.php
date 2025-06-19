@@ -12,14 +12,17 @@ $method = $_SERVER["REQUEST_METHOD"];
 try {
     switch ($method) {
         case "GET":
+
             if (isset($_GET["id"])) {
                 $result = $controller->get((int)$_GET["id"]);
+
                 if ($result) {
                     echo json_encode($result, JSON_UNESCAPED_UNICODE);
                 } else {
                     http_response_code(404);
                     echo json_encode(['error' => 'Book not found.']);
                 }
+
             } else if (isset($_GET["search"])) {
                 echo json_encode($controller->search($_GET["search"]), JSON_UNESCAPED_UNICODE);
             } else {
@@ -29,12 +32,14 @@ try {
 
         case "POST":
             $data = json_decode(file_get_contents("php://input"), true);
+
             if (!$data) {
                 http_response_code(400);
                 echo json_encode(['error' => 'Invalid JSON.']);
                 break;
             }
             $ok = $controller->create($data);
+
             if ($ok) {
                 http_response_code(201);
                 echo json_encode(['success' => 'Book added.']);
@@ -46,12 +51,14 @@ try {
 
         case "PUT":
             $data = json_decode(file_get_contents("php://input"), true);
+
             if (!$data || !isset($data["id"])) {
                 http_response_code(400);
                 echo json_encode(['error' => 'Missing or invalid "id".']);
                 break;
             }
             $ok = $controller->update($data);
+
             if ($ok) {
                 echo json_encode(['success' => 'Book updated.']);
             } else {
@@ -62,16 +69,19 @@ try {
 
         case "DELETE":
             $id = $_GET["id"] ?? null;
+
             if (!$id) {
                 $data = json_decode(file_get_contents("php://input"), true);
                 $id = $data["id"] ?? null;
             }
+
             if (!$id) {
                 http_response_code(400);
                 echo json_encode(['error' => 'Missing "id".']);
                 break;
             }
             $ok = $controller->delete((int)$id);
+
             if ($ok) {
                 http_response_code(204);
             } else {

@@ -19,6 +19,7 @@ class BookRepository
     {
         $stmt = $this->conn->prepare("INSERT INTO books (Title, Author, PublishYear, IsAvailable) VALUES (?,?,?,?)"
         );
+
         return $stmt->execute([
             $book->getTitle(),
             $book->getAuthor(),
@@ -44,6 +45,7 @@ class BookRepository
                 (int)$row['Id']
             ))->toArray();
         }
+
         return $books;
     }
 
@@ -64,6 +66,7 @@ class BookRepository
             (bool)$row['IsAvailable'],
             (int)$row['Id']
         );
+
         return $book->toArray();
     }
 
@@ -72,6 +75,7 @@ class BookRepository
     {
         $stmt = $this->conn->prepare("UPDATE books SET Title = ?, Author = ?, PublishYear = ?, IsAvailable = ? WHERE Id = ?"
         );
+
         return $stmt->execute([
             $book->getTitle(),
             $book->getAuthor(),
@@ -99,8 +103,8 @@ class BookRepository
         $stmt->bindParam(':q2', $like, PDO::PARAM_STR);
         $stmt->execute();
         $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
         $books = [];
+
         foreach ($rows as $row) {
             $books[] = (new Book(
                 $row['Title'],
@@ -110,6 +114,7 @@ class BookRepository
                 (int)$row['Id']
             ))->toArray();
         }
+
         return $books;
     }
 }

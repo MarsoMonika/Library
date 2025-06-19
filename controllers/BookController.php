@@ -4,21 +4,21 @@ require_once __DIR__ . '/../classes/Database.php';
 require_once __DIR__ . '/../classes/Book.php';
 
 class BookController {
-    private BookRepository $repo;
+    private BookRepository $bookRepository;
 
     public function __construct() {
         $db = new Database();
-        $this->repo = new BookRepository($db);
+        $this->bookRepository = new BookRepository($db);
     }
 
     //returns the lis of all books
     public function list() {
-        return $this->repo->getAll();
+        return $this->bookRepository->getAll();
     }
 
     //getting a book by id
     public function get($id) {
-        return $this->repo->getById($id);
+        return $this->bookRepository->getById($id);
     }
 
     //creates a new record by the given data
@@ -29,7 +29,8 @@ class BookController {
             (int)($data["publishYear"] ?? 0),
             (bool)($data["isAvailable"] ?? false)
         );
-        return $this->repo->add($book);
+
+        return $this->bookRepository->add($book);
     }
 
     //updates the record by the provided data
@@ -41,16 +42,17 @@ class BookController {
             (bool)($data["isAvailable"] ?? false),
             (int)($data["id"] ?? 0)
         );
-        return $this->repo->update($book);
+
+        return $this->bookRepository->update($book);
     }
 
     //deletes the record by id
     public function delete($id) {
-        return $this->repo->delete($id);
+        return $this->bookRepository->delete($id);
     }
 
     //search for books by query string
     public function search($q) {
-        return $this->repo->search($q);
+        return $this->bookRepository->search($q);
     }
 }
