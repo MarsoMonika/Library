@@ -6,11 +6,12 @@ Includes full CRUD endpoints and Postman tests.
 ---
 
 ## 1. System Architecture
-+------------+ HTTP +--------------+ PDO/MS SQL +-------------+
-| Client | <---------------> | PHP API | <---------------------> | Database |
-| (JS/HTML) | (GET/POST/...) | (books.php) | (BookRepository) | (Books) |
-+------------+ +--------------+ +-------------+
-
+```text
++----------+       HTTP        +-------------+       Logic       +----------------+     SQL     +-----------+
+|  Client  | <---------------> |  books.php  | <---------------> | BookController | <---------> | Database  |
+| (JS/HTML)|                   |  (API)      |                   |                |   PDO       |  (Books)  |
++----------+                   +-------------+                   +----------------+             +-----------+
+```
 - **Client:** Frontend or API client (Postman, browser, JS app)
 - **PHP API:** Entry point is `public/api/books.php`, which handles all HTTP requests.
 - **Repository:** `classes/BookRepository.php` is the data access layer between the PHP API and the SQL database.
