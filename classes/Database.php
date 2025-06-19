@@ -19,6 +19,7 @@ class Database
 
     public function connect(): PDO
     {
+
         if ($this->conn == null) {
             $dsn = "sqlsrv:Server=$this->host;Database=$this->db";
             try {
@@ -28,6 +29,7 @@ class Database
                 throw new PDOException("Connection failed" . $e->getMessage());
             }
         }
+
         return $this->conn;
     }
 }

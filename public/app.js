@@ -51,6 +51,7 @@ cancelBtn.addEventListener('click', hideForm);
 form.addEventListener('submit', handleFormSubmit);
 
 booksGrid.addEventListener('click', (e) => {
+
     if (e.target.matches('button.edit')) {
         const id = e.target.dataset.id;
         editBook(id);
@@ -130,6 +131,7 @@ async function handleFormSubmit(e) {
 async function editBook(id) {
     try {
         const res = await fetch(`./api/books.php?id=${id}`);
+
         if (!res.ok) throw new Error('Failed to fetch book');
         const book = await res.json();
 
